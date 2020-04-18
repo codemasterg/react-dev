@@ -34,6 +34,10 @@ class Layout extends Component {
         );
     }
 
+    /**
+     * If mobile, set handler for opening / closing the side drawer,
+     * otherwise set handler appropriate for the desktop.
+     */
     setMenuClickHandler() {
         if (window.matchMedia("(max-width: 500px)").matches) {
             if (this.state.showSideDrawer) {
