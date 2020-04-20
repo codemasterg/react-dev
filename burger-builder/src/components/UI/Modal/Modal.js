@@ -10,20 +10,21 @@ class Modal extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.show!== nextProps.show;
     }
+
     render() {
         return(
-    <Fragment>
-        {/* backdrop greys-out the background when dialog (modal) is shown */}
-        <Backdrop show={this.props.show} clicked={this.props.modalClosed}/>  
-        <div className={classes.Modal}
-            // if showing this dialog, display center screen or slide off-screen to the top
-            style={{
-                transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
-                opacity: this.props.show ? '1' : '0'
-                }}>
-            {this.props.children}
-        </div>
-    </Fragment>
+            <Fragment>
+                {/* backdrop greys-out the background when dialog (modal) is shown */}
+                <Backdrop show={this.props.show} clicked={this.props.modalClosed}/>  
+                <div className={classes.Modal}
+                    // if showing this dialog, display center screen or slide off-screen to the top
+                    style={{
+                        transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
+                        opacity: this.props.show ? '1' : '0'
+                        }}>
+                    {this.props.children}
+                </div>
+            </Fragment>
         );
     }
 }
