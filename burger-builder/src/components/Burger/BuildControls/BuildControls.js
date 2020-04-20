@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import BuildControl from './BuildControl/BuildControl'
 import classes from './BuildControls.css'
-
+import PropTypes from 'prop-types';
 
 const buildControls = (props) => {
     return (
@@ -25,5 +25,15 @@ const buildControls = (props) => {
         </Fragment>
     )
 }
+
+buildControls.propTypes = {
+    ingredientAdder: PropTypes.func.isRequired,
+    purchasable: PropTypes.bool,
+    ordered: PropTypes.func.isRequired,
+    ingredientRemover: PropTypes.func.isRequired,
+    ingredientCounts: PropTypes.object,
+    prices: PropTypes.object.isRequired,
+}
+
 
 export default buildControls;
