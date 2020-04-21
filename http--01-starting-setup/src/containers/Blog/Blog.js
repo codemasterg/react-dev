@@ -5,6 +5,10 @@ import FullPost from '../../components/FullPost/FullPost';
 import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
 
+/**
+ * Example that uses axios to make REST calls.  Axios installed via:
+ * sudo npm install axios --save
+ */
 class Blog extends Component {
 
     state = {
