@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import axios from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -108,7 +109,32 @@ class BurgerBuilder extends Component {
     }
 
     orderContinueHandler = () => {
-        alert("Ordered for " + this.state.totalPrice.toFixed(2));
+        // alert("Ordered for " + this.state.totalPrice.toFixed(2));
+
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice, // normally set on server!
+            customer: {
+                name: 'Greg',
+                address: {
+                    street: '100 Main St.',
+                    town: 'My Town',
+                    zipCode: 12345,
+                },
+                email: 'test@test.com',
+                deliveryMethod: 'mega-delivery'        
+            },
+
+            }
+        
+        // base url set in instance that was imported
+        axios.post('/orders.json', order)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 }
 
