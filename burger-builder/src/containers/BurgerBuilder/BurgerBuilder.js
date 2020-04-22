@@ -4,6 +4,8 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import Spinner from '../../components/UI/Spinner/Spinner'
+import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler'
 
 const INGREDIENT_PRICES = {
     salad: .5,
@@ -23,17 +25,24 @@ class BurgerBuilder extends Component {
         totalPrice: 4,  // base price is $4
         purchasable: false,
         ordering: false,
+        loading: false,
     }
 
+   
     render() {
+        let orderSummary = <OrderSummary ingredients={this.state.ingredients} 
+        canceled={this.orderCancelHandler}
+        ordered={this.orderContinueHandler}
+        totalPrice={this.state.totalPrice}/>;
+
+        if (this.state.loading) {
+            orderSummary = <Spinner />;
+        }
 
         return(
             <Fragment>
                 <Modal show={this.state.ordering} modalClosed={this.orderCancelHandler}>
-                    <OrderSummary ingredients={this.state.ingredients} 
-                        canceled={this.orderCancelHandler}
-                        ordered={this.orderContinueHandler}
-                        totalPrice={this.state.totalPrice}/>
+                    {orderSummary}     
                 </Modal>
                 <Burger 
                     ingredients={this.state.ingredients} />
@@ -111,6 +120,7 @@ class BurgerBuilder extends Component {
     orderContinueHandler = () => {
         // alert("Ordered for " + this.state.totalPrice.toFixed(2));
 
+        // make some fake data for posting
         const order = {
             ingredients: this.state.ingredients,
             price: this.state.totalPrice, // normally set on server!
@@ -128,6 +138,7 @@ class BurgerBuilder extends Component {
             }
         
         // base url set in instance that was imported
+        this.setState({loading: true}); // for busy wheel
         axios.post('/orders.json', order)
             .then(response => {
                 console.log(response);
@@ -135,8 +146,10 @@ class BurgerBuilder extends Component {
             .catch(error => {
                 console.log(error);
             })
+            .finally( () => {
+               this.setState({loading: false, ordering: false});
+            })
     }
 }
 
-
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);

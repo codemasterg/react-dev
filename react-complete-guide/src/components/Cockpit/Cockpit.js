@@ -26,7 +26,7 @@ const cockpit = (props) => {
         // will NOT cause this effect to run because they are part of persons which
         // is not a prop of this function component.
     }, []);  // note 2nd arg, 'showPersons'. 
-                          //If you just want DidMount, just use empty array [],
+                          //If you just want componentDidMount, just use empty array [],
                           // you can also list multiple props you want this hook to apply to
 
     // you can apply css class dynamically cause this is still as JS!
