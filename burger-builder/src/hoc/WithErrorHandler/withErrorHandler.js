@@ -1,8 +1,13 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import Modal from '../../components/UI/Modal/Modal'
 
-// note use of double arrows (curried function):
-// read: func(WrappedComponent, axois) returns func(props)
+/**
+ * Wrapper function component to handle axois errors by
+ * presenting an error Modal (dialog) when a globally configured
+ * axios interceptor indicates an error has occurred. 
+ * Note use of double arrows (curried function):
+ *   read: func(WrappedComponent, axois) returns func(props)
+ **/ 
 const withErrorHandler = (WrappedComponent, axois) => props => {
     const [error, setError] = useState(null);
 
@@ -24,6 +29,7 @@ const withErrorHandler = (WrappedComponent, axois) => props => {
         setError(null);
     }
 
+    // present the given WrappedComponent and popup a dialog on error
     return(
         <Fragment>
             <Modal show={error !== null}
