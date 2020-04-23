@@ -16,38 +16,33 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component {
 
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0,
-        },
+        ingredients: null,
         totalPrice: 4,  // base price is $4
         purchasable: false,
         ordering: false,
         loading: false,
     }
 
-   
+    componentDidMount() {
+        axios.get('https://react-my-burger-fc12a.firebaseio.com/ingredients.json')
+            .then(resp => {
+                this.setState({ingredients: resp.data})
+            })
+            .catch(error => {console.log(error)});
+    }
+
     render() {
-        let orderSummary = <OrderSummary ingredients={this.state.ingredients} 
-        canceled={this.orderCancelHandler}
-        ordered={this.orderContinueHandler}
-        totalPrice={this.state.totalPrice}/>;
 
-        if (this.state.loading) {
-            orderSummary = <Spinner />;
-        }
-
-        return(
-            <Fragment>
-                <Modal show={this.state.ordering} modalClosed={this.orderCancelHandler}>
-                    {orderSummary}     
-                </Modal>
-                <Burger 
+        // since ingredients are fetched from the DB, must present the spinner if
+        // they are not yet available.
+        let orderSummary = null;
+        let burger = <Spinner />;
+        if(this.state.ingredients) {
+            burger = <Fragment>
+                <Burger
                     ingredients={this.state.ingredients} />
                 {/* controls to add / remove toppings */}
-                <BuildControls 
+                <BuildControls
                     ingredientAdder={this.addIngredientHandler}
                     ingredientRemover={this.removeIngredientHandler}
                     prices={INGREDIENT_PRICES}
@@ -55,7 +50,25 @@ class BurgerBuilder extends Component {
                     // pass in ingredients counts to enable / disable remove button
                     ingredientCounts={this.state.ingredients}
                     purchasable={this.state.purchasable}
-                    ordered={this.orderHandler} />  
+                    ordered={this.orderHandler} />
+            </Fragment>;
+
+            orderSummary = <OrderSummary ingredients={this.state.ingredients}
+                canceled={this.orderCancelHandler}
+                ordered={this.orderContinueHandler}
+                totalPrice={this.state.totalPrice} />;
+        }
+
+        if (this.state.loading) {
+            orderSummary = <Spinner />; 
+        }
+
+        return(
+            <Fragment>
+                <Modal show={this.state.ordering} modalClosed={this.orderCancelHandler}>
+                    {orderSummary}     
+                </Modal>
+                {burger}
             </Fragment>
         );
     };
@@ -89,7 +102,6 @@ class BurgerBuilder extends Component {
         };
 
         updatedIngredients[type] = updatedCount;
-
         
         // update total price
         const newTotalPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
