@@ -10,11 +10,22 @@ import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
  * sudo npm install axios --save  // add support for rest calls from react using axios
  */
 class App extends Component {
+
+  state = {
+    show: true,
+  }
+
+  // for testing cleanup
+  componentDidMount() {
+    // setTimeout(() => {
+    //   this.setState({show: false})
+    // }, 5000)
+  }
   render() {
     return (
       
       <Layout>
-        <BurgerBuilder />
+       {this.state.show ? <BurgerBuilder /> : null}
       </Layout>
     
     );
