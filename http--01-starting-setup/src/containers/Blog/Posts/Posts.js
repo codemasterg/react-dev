@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import {Link} from 'react-router-dom'
+import React, { Component, Fragment } from 'react';
+import {Link, Route} from 'react-router-dom'
 import axios from 'axios'
 import Post from '../../../components/Post/Post'
+import FullPost from '../FullPost/FullPost'
 import './Posts.css'
 
 class Posts extends Component {
@@ -38,7 +39,7 @@ class Posts extends Component {
         }
         else {
             posts = this.state.posts.map(post => (
-                <Link to={'/' + post.id} key={post.id}> 
+                <Link to={'/posts/' + post.id} key={post.id}> 
                     <Post
                         title={post.title}
                         author={post.author}
@@ -48,9 +49,13 @@ class Posts extends Component {
         }
 
         return(
-            <section className="Posts">
-                {posts}
-            </section>
+            <div>
+                <section className="Posts">
+                    {posts}
+                </section>
+                {/* example of path var and also a nested route, and use of dynamic base url */}
+                <Route path={this.props.match.url + '/:id'}  component={FullPost} />
+            </div>
         )
     }
 

@@ -7,12 +7,21 @@ class FullPost extends Component {
         loadedPost: null,
     }
 
+    componentDidUpdate() {
+        this.loadPost();
+    }
     componentDidMount() {
+        this.loadPost();
+    }
+
+    loadPost() {
+      
         // since state updates will cause this hook to be called and thus 
         // create an infinite loop, check if post not already loaded or if it 
         // is, ensure the post ID requested is not the same as the already obtained.
         if(this.props.match.params.id) {  // 'id' is path var set via Route component in Blog.js
-            if(!this.state.loadedPost || this.state.loadedPost.id !== this.props.match.params.id) {
+            // must use != instead of !==  - loadPost.id is number, params.id is string!!!
+            if(!this.state.loadedPost || this.state.loadedPost.id != this.props.match.params.id) {
                 axios.get("https://jsonplaceholder.typicode.com/posts/" + this.props.match.params.id)
                     .then(response => {
                         this.setState({loadedPost: response.data})
@@ -23,7 +32,7 @@ class FullPost extends Component {
 
     render () {
         let post = <p>Loading the selected Post ...</p>;
-        if(this.props.id) {
+        if(this.props.match.params.id) {
             post = <p>Loading...</p>;
         }
         if(this.state.loadedPost) {
@@ -46,7 +55,7 @@ class FullPost extends Component {
     }
 
     deletePostHandler = (id) => {
-        axios.delete("https://jsonplaceholder.typicode.com/posts/" + this.props.id)
+        axios.delete("https://jsonplaceholder.typicode.com/posts/" + this.match.params.id)
             .then(response => {
                 this.setState({loadedPost: null});
             });

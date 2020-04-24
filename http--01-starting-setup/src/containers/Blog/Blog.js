@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Posts from './Posts/Posts'
 import NewPost from './NewPost/NewPost'
-import FullPost from './FullPost/FullPost'
 import './Blog.css';
 import {Route, NavLink, Switch} from 'react-router-dom'
 
@@ -24,7 +23,7 @@ class Blog extends Component {
                         <ul>
                             {/* Note use of Link instead of <a> tag, read docs on Link.
                             This eliminates need to reload page.*/}
-                            <li><NavLink exact to="/">Home</NavLink></li>
+                            <li><NavLink exact to="/posts/">Posts</NavLink></li>
                             <li><NavLink to={{
                                 pathname: '/new-post',  // always treated as absolute OR
                                 //pathname: this.props.match.url + '/new-post', and must use withRouter hoc
@@ -40,10 +39,8 @@ class Blog extends Component {
                   Note that routes are evaluated in the order listed. Using Switch however ensures
                   only the 1st matching route is selected. */}
                 <Switch>
-                    <Route path="/" exact={true} component={Posts} />
                     <Route path="/new-post" component={NewPost} />
-                    {/* example of path var */}
-                    <Route path="/:id" exact={true} component={FullPost} />
+                    <Route path="/posts" component={Posts} />
                 </Switch>
             </div>
         );
