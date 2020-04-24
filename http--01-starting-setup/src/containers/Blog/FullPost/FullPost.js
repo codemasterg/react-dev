@@ -7,6 +7,7 @@ class FullPost extends Component {
         loadedPost: null,
     }
 
+    // must load on update because Router path updates trigger an update
     componentDidUpdate() {
         this.loadPost();
     }
@@ -19,7 +20,7 @@ class FullPost extends Component {
         // since state updates will cause this hook to be called and thus 
         // create an infinite loop, check if post not already loaded or if it 
         // is, ensure the post ID requested is not the same as the already obtained.
-        if(this.props.match.params.id) {  // 'id' is path var set via Route component in Blog.js
+        if(this.props.match.params.id) {  // 'id' is path var set via Route component in Posts.js
             // must use != instead of !==  - loadPost.id is number, params.id is string!!!
             if(!this.state.loadedPost || this.state.loadedPost.id != this.props.match.params.id) {
                 axios.get("https://jsonplaceholder.typicode.com/posts/" + this.props.match.params.id)

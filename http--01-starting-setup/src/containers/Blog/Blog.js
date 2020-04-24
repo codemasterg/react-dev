@@ -37,9 +37,10 @@ class Blog extends Component {
                 {/* Same route element can be repeated but with diff component or render prop, e.g.
                   <Route path="/" exact = {true} render={() => <h1>Some Text</h1>} />
                   Note that routes are evaluated in the order listed. Using Switch however ensures
-                  only the 1st matching route is selected. */}
+                  only the 1st matching route is selected, so order is very important. If
+                  the 'exact' prop is not set, the /posts means ALL paths that begin with /posts */}
                 <Switch>
-                    <Route path="/new-post" component={NewPost} />
+                    <Route path="/new-post" component={NewPost} /> 
                     <Route path="/posts" component={Posts} />
                 </Switch>
             </div>

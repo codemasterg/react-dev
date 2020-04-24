@@ -53,7 +53,7 @@ class Posts extends Component {
                 <section className="Posts">
                     {posts}
                 </section>
-                {/* example of path var and also a nested route, and use of dynamic base url */}
+                {/* example of path var (:id), a nested route, and use of dynamic base url */}
                 <Route path={this.props.match.url + '/:id'}  component={FullPost} />
             </div>
         )
