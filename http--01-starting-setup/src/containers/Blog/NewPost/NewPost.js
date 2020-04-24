@@ -10,6 +10,10 @@ class NewPost extends Component {
         author: 'Max'
     }
 
+    componentDidMount() {
+        console.log(this.props);  // log additional route props
+    }
+
     render () {
         return (
             <div className="NewPost">

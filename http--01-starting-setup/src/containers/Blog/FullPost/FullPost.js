@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-
 import './FullPost.css';
 
 class FullPost extends Component {
@@ -8,13 +7,13 @@ class FullPost extends Component {
         loadedPost: null,
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
         // since state updates will cause this hook to be called and thus 
         // create an infinite loop, check if post not already loaded or if it 
         // is, ensure the post ID requested is not the same as the already obtained.
-        if(this.props.id) {
-            if(!this.state.loadedPost || this.state.loadedPost.id !== this.props.id) {
-                axios.get("https://jsonplaceholder.typicode.com/posts/" + this.props.id)
+        if(this.props.match.params.id) {  // 'id' is path var set via Route component in Blog.js
+            if(!this.state.loadedPost || this.state.loadedPost.id !== this.props.match.params.id) {
+                axios.get("https://jsonplaceholder.typicode.com/posts/" + this.props.match.params.id)
                     .then(response => {
                         this.setState({loadedPost: response.data})
                     });
@@ -23,7 +22,7 @@ class FullPost extends Component {
     }
 
     render () {
-        let post = <p>Please select a Post!</p>;
+        let post = <p>Loading the selected Post ...</p>;
         if(this.props.id) {
             post = <p>Loading...</p>;
         }
