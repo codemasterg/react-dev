@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
+import {Route, NavLink, Switch, Redirect} from 'react-router-dom'
 import axios from 'axios';
 import Posts from './Posts/Posts'
-import NewPost from './NewPost/NewPost'
 import './Blog.css';
-import {Route, NavLink, Switch, Redirect} from 'react-router-dom'
+
+import asyncNewComponent from '../../hoc/asyncComponent'
+
+// Example of lazy loading of a component instead of just importing it
+// via import NewPost from './NewPost/NewPost'.  NOTE, React 16.6 and higher
+// provides React.lazy(() => import('./NewPost/NewPost')) so no need to 
+// implement own hoc, but when component is rendered must use <Suspense > to wrap it.
+// See folder routing--react-suspense-finished for a complete example.
+const LazyLoadNewPost = asyncNewComponent(() => {
+    return import('./NewPost/NewPost');  // dynamic import syntax
+});
 
 /**
  * Example that uses axios to make REST calls.  Axios installed via:
@@ -40,7 +50,7 @@ class Blog extends Component {
                   only the 1st matching route is selected, so order is very important. If
                   the 'exact' prop is not set, the /posts means ALL paths that begin with /posts */}
                 <Switch>
-                    <Route path="/new-post" component={NewPost} /> 
+                    <Route path="/new-post" component={LazyLoadNewPost} /> 
                     <Route path="/posts" component={Posts} />
                     {/* <Route path="/" component={Posts} /> */}
                     {/* OR */}
