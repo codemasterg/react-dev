@@ -3,7 +3,7 @@ import axios from 'axios';
 import Posts from './Posts/Posts'
 import NewPost from './NewPost/NewPost'
 import './Blog.css';
-import {Route, NavLink, Switch} from 'react-router-dom'
+import {Route, NavLink, Switch, Redirect} from 'react-router-dom'
 
 /**
  * Example that uses axios to make REST calls.  Axios installed via:
@@ -42,6 +42,12 @@ class Blog extends Component {
                 <Switch>
                     <Route path="/new-post" component={NewPost} /> 
                     <Route path="/posts" component={Posts} />
+                    {/* <Route path="/" component={Posts} /> */}
+                    {/* OR */}
+                    <Redirect exact from="/" to="/posts" />
+
+                    {/* {/* should always come last, example of how to handle 404. */}
+                    <Route render={() => <h2>Ooops, Page not found.</h2>} /> 
                 </Switch>
             </div>
         );
