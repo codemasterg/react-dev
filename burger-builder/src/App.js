@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter} from 'react-router-dom'
+import {BrowserRouter, Route} from 'react-router-dom'
 import Layout from './containers/Layout/Layout'
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
 import Checkout from './containers/Checkout/Checkout'
@@ -14,10 +14,6 @@ import Checkout from './containers/Checkout/Checkout'
  */
 class App extends Component {
 
-  state = {
-    show: true,
-  }
-
   // for testing cleanup
   componentDidMount() {
     // setTimeout(() => {
@@ -29,8 +25,10 @@ class App extends Component {
       // Setup BrowserRouter here so all descedant components can use routing 
       <BrowserRouter>
         <Layout>
-          {this.state.show ? <BurgerBuilder /> : null}
-          <Checkout />
+          {/* Use 'exact' so "/" is not treated as a wild card prefix, A Switch can instead be used
+          if preferred */}          
+          <Route path="/checkout" component={Checkout}/>
+          <Route path="/" exact component={BurgerBuilder}/>
         </Layout>
       </BrowserRouter>
     );

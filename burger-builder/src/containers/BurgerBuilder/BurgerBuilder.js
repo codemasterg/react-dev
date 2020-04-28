@@ -24,6 +24,7 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
         axios.get('https://react-my-burger-fc12a.firebaseio.com/ingredients.json')
             .then(resp => {
                 this.setState({ingredients: resp.data})
@@ -129,7 +130,28 @@ class BurgerBuilder extends Component {
         this.setState({ordering: false})
     }
 
+    /**
+     * This handler is invoked if the user clicks 'Continue' from the OrderSummary,
+     * it redirects (pushes) to a new route for /checkout which is mapped to the
+     * Checkout in App.js.
+     */
     orderContinueHandler = () => {
+
+        // encode ingredient counts as name value pairs for the url
+        const queryParams = [];
+        for(let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' 
+                + encodeURIComponent(this.state.ingredients[i]));
+        }
+        const queryString = queryParams.join('&');  // convert array of N/Vs to string for URL
+
+        this.props.history.push({
+            pathname: 'checkout',
+            search: '?' + queryString,    // e.g.: ?bacon=0&cheese=2&meat=1&salad=2
+        });
+    }
+
+    checkoutHandler = () => {
         // alert("Ordered for " + this.state.totalPrice.toFixed(2));
 
         // make some fake data for posting
