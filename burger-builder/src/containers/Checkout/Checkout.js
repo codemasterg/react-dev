@@ -9,26 +9,29 @@ import ContactData from './ContactData/ContactData'
  */
 class Checkout extends Component {
     state = {
-        ingredients: {
-            meat: 1,
-            cheese: 1,
-            salad: 1,
-            bacon: 1,
-        }
+        ingredients: null,
+        totalPrice: 0,
     }
 
     // Since Checkout is not a sub-component of any other component of App,
-    // didMount is always called so this method can be used to perform the conversion
-    // of search params to state ingredients.
-    componentDidMount() {
+    // willMount is always called so this method can be used to perform the conversion
+    // of search params to state ingredients.  WillMount is used instead of didMount to
+    // ensure ingredients and total price are set as state vars before any rendering is done.
+    componentWillMount() {
         const query = new URLSearchParams(this.props.location.search);  // extracts query search params
         const ingredients = {};
+        let totalPrice = 0;
         for(let params of query.entries()) {
-            // ['salad', '1']
-            ingredients[params[0]] = +params[1];  // '+' auto converts string to number
+            if (params[0] === 'totalPrice') {
+                totalPrice = +params[1];
+            }
+            else {
+                // ['salad', '1']
+                ingredients[params[0]] = +params[1];  // '+' auto converts string to number
+            }
         }
         console.log('ingredients: ' + ingredients);
-        this.setState({ingredients: ingredients});
+        this.setState({ingredients: ingredients, totalPrice: totalPrice});
     }
 
     render() {
@@ -38,7 +41,12 @@ class Checkout extends Component {
                     ingredients={this.state.ingredients} 
                     checkoutCancelHandler={this.checkoutCancelHandler}
                     checkoutContinueHandler={this.checkoutContinueHandler} />
-                <Route path={this.props.match.path + '/contact-data'} component={ContactData}/>
+                <Route 
+                    path={this.props.match.path + '/contact-data'} 
+                    // NOTE - see how you can pass props on a route component?!
+                    render={() => (<ContactData 
+                        ingredients={this.state.ingredients}
+                        totalPrice={this.state.totalPrice}/>)}/>
                 
             </div>
         );

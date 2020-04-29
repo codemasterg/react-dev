@@ -11,6 +11,9 @@ import Checkout from './containers/Checkout/Checkout'
  *   npm run eject   // ejected so webpack.config.* can be changed to support scoped CCS classes
  * sudo npm install axios --save  // add support for rest calls from react using axios
  * sudo npm install --save react-router react-router-dom // add support for path routing
+ * 
+ * Component flow: BurgerBuilder --> OrderSummary (a dialog / modal) --> Checkout
+ *    --> CheckoutSummary
  */
 class App extends Component {
 

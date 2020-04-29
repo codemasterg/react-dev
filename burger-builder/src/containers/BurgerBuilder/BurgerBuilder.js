@@ -143,6 +143,9 @@ class BurgerBuilder extends Component {
             queryParams.push(encodeURIComponent(i) + '=' 
                 + encodeURIComponent(this.state.ingredients[i]));
         }
+
+        // add total price
+        queryParams.push('totalPrice=' + this.state.totalPrice);
         const queryString = queryParams.join('&');  // convert array of N/Vs to string for URL
 
         this.props.history.push({
@@ -154,35 +157,7 @@ class BurgerBuilder extends Component {
     checkoutHandler = () => {
         // alert("Ordered for " + this.state.totalPrice.toFixed(2));
 
-        // make some fake data for posting
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice, // normally set on server!
-            customer: {
-                name: 'Greg',
-                address: {
-                    street: '100 Main St.',
-                    town: 'My Town',
-                    zipCode: 12345,
-                },
-                email: 'test@test.com',
-                deliveryMethod: 'mega-delivery'        
-            },
 
-            }
-        
-        // base url set in instance that was imported
-        this.setState({loading: true}); // for busy wheel
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-            .finally( () => {
-               this.setState({loading: false, ordering: false});
-            })
     }
 }
 
