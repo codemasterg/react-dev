@@ -44,9 +44,10 @@ class Checkout extends Component {
                 <Route 
                     path={this.props.match.path + '/contact-data'} 
                     // NOTE - see how you can pass props on a route component?!
-                    render={() => (<ContactData 
+                    render={(props) => (<ContactData 
                         ingredients={this.state.ingredients}
-                        totalPrice={this.state.totalPrice}/>)}/>
+                        totalPrice={this.state.totalPrice}
+                        {...props} />)}/>
                 
             </div>
         );
