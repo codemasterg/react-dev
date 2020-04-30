@@ -3,6 +3,7 @@ import {BrowserRouter, Route} from 'react-router-dom'
 import Layout from './containers/Layout/Layout'
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
 import Checkout from './containers/Checkout/Checkout'
+import Orders from './containers/Orders/Orders'
 
 /**
  * Burger Builder App, created with:
@@ -31,6 +32,7 @@ class App extends Component {
           {/* Use 'exact' so "/" is not treated as a wild card prefix, A Switch can instead be used
           if preferred */}          
           <Route path="/checkout" component={Checkout}/>
+          <Route path="/orders" component={Orders}/>
           <Route path="/" exact component={BurgerBuilder}/>
         </Layout>
       </BrowserRouter>
