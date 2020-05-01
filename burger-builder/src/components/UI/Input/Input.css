@@ -25,3 +25,8 @@
     outline: none;
     background-color: #ccc;
 }
+
+.InvalidInput {
+    border: 1px red;
+    background-color: salmon;
+}

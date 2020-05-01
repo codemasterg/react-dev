@@ -8,6 +8,7 @@ import classes from './Button.css';
 const button = (props) => (
     <button 
         onClick={props.clicked}
+        disabled={props.disabled}
         // An array is used since we want Button and from Button.css 
         // we also want the given button type i.e. (Sucess / Danger); 
         // note the use of classes as map (dictionary).

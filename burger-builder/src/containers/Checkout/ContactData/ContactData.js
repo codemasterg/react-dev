@@ -14,7 +14,7 @@ class ContactData extends Component {
             name: this.setupInput("text", "Your Name"),
             street: this.setupInput("text", "Your Street"),
             town: this.setupInput("text", "Your Town"),
-            zipCode: this.setupInput("text", "Your Zip"),
+            zipCode: this.setupInput("text", "Your Zip", {minLength: 5, maxLength: 5}),
             email: this.setupInput("email", "Your email@abc123.com"),
             deliveryMethod: {
                 elementType: 'select',
@@ -25,10 +25,14 @@ class ContactData extends Component {
                     ]
                 },
                 value: '',
+                validation: {},
+                valid: true,  // drop-down is always valid
             },
         },
         loading: false,
+        formIsValid: false,
     }
+
     render() {
         const formElements = [];
         for(let key in this.state.orderForm) {
@@ -44,17 +48,23 @@ class ContactData extends Component {
 
                     <div className={classes.ContactData}>
                         <h4>Enter your contact data</h4>
-                        <form>
+                        <form onSubmit={this.orderHandler}>
                             {formElements.map(input => {
                                 return(
                                     <Input elementType={input.config.elementType} 
                                         elementConfig={input.config.elementConfig} 
                                         value={input.config.value}
+                                        invalid={!input.config.valid}
+                                        shouldValidate={input.config.validation}
+                                        touched={input.config.touched}
                                         changed={(event) => this.inputChangedHandler(event, input.id)}
                                         key={input.id} />
                                 );
                             })}
-                            <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+                            <Button 
+                                btnType="Success" 
+                                disabled={!this.state.formIsValid}
+                                clicked={this.orderHandler}>ORDER</Button>
                         </form>
                     </div>
                 }
@@ -66,14 +76,23 @@ class ContactData extends Component {
 
         // default behavior on a form is to send a request and reload the page, disable
         event.preventDefault();
-        // make some fake data for posting
-        const order = {
-            ingredients: this.props.ingredients,
-            price: this.props.totalPrice, // normally set on server!
-        }
 
         // base url set in instance that was imported
         this.setState({ loading: true }); // for busy wheel
+
+        // Just need contact input field names and values entered so they can be posted
+        const contactData ={};
+        for(let formElementId in this.state.orderForm) {
+            contactData[formElementId] = this.state.orderForm[formElementId].value;
+        }
+
+        // build the order (burger, price, contact) for posting
+        const order = {
+            ingredients: this.props.ingredients,
+            price: this.props.totalPrice, // normally set on server!
+            contactData: contactData,
+        }
+
         axios.post('/orders.json', order)
             .then(response => {
                 this.setState({ loading: false });
@@ -91,7 +110,7 @@ class ContactData extends Component {
     }
  
     // common input config creater
-    setupInput(inputType, placeholderText) {
+    setupInput(inputType, placeholderText, validationRules) {
         return ({
             elementType: 'input',
             elementConfig: {
@@ -99,7 +118,13 @@ class ContactData extends Component {
                 placeholder: placeholderText,
             },
             value: '',
-        })
+            validation: {
+                required: true,
+                ...validationRules,  // add any input specific validation passed in
+            },
+            valid: false,  // assume invalid to actually validated
+            touched: false,  // has user ever entered anything?
+        });
     }
 
     /**
@@ -116,10 +141,36 @@ class ContactData extends Component {
         const updatedFormElement = {...updatedOrderForm[inputId] };
 
         updatedFormElement.value = event.target.value;  // copy user input char(s)
+        updatedFormElement.valid 
+            = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.touched = true;
         updatedOrderForm[inputId] = updatedFormElement;  // The order form copy now has the updated input value
-        this.setState({orderForm: updatedOrderForm});   // note that the whole form is being updated
 
+        let formIsValid = true;
+        for(let inputId in updatedOrderForm) {
+            formIsValid = updatedOrderForm[inputId].valid && formIsValid;
+        }
 
+        // note that the whole form is being updated
+        this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
+
+    }
+
+    checkValidity(value, rules) {
+        let isValid = true;
+        if(rules.required) {
+            isValid = value.trim() !== '' && isValid;
+        }
+
+        if(rules.minLength) {
+            isValid = value.trim().length >= rules.minLength && isValid;
+        }
+
+        if(rules.maxLength) {
+            isValid = value.trim().length <= rules.maxLength && isValid;
+        }
+
+        return isValid;
     }
 }
 
