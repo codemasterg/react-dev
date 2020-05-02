@@ -33,7 +33,7 @@ class Counter extends Component {
                 of state to props given to redux connect(). */}
                 <CounterOutput value={this.props.ctr} />
                 {/* Instead of the normal handler ref, pass redux method property established
-                    at the bottom of this file */}
+                    at the bottom of this file that fires an action event. */}
                 <CounterControl label="Increment" clicked={this.props.onIncrementCounter} />
                 <CounterControl label="Decrement" clicked={this.props.onDecrementCounter}  />
                 <CounterControl label="Add 5" clicked={this.props.onAddCounter}  />

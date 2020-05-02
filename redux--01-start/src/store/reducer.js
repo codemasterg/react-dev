@@ -4,13 +4,21 @@ const initialState = {
     results: [],
 }
 
-// if state is under, use default param value 'initialState'
+/**
+ * It's critical that a true copy of state be made before updates are made.
+ * Nested objects and arrays require special care, see:
+ *    https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns/
+ * 
+ * @param {*} state 
+ * @param {*} action 
+ */
+// if state is undefined, use default param value 'initialState'
 const reducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ('INCREMENT'):
             return {
-                ...state,
+                ...state,   // use spread op to make a shallow copy, every level of nesting must be copied
                 counter: state.counter + 1
             }
         case ('DECREMENT'):
@@ -36,10 +44,10 @@ const reducer = (state = initialState, action) => {
                 results: state.results.concat({id: new Date(), value: state.counter})
             }
         case ('DELETE_RESULT'):
+            // note use of filter() which make an array copy, instead of splice()
             const updatedArray = state.results.filter( (result, index) => result.id != action.resId); 
             return {
                 ...state,
-                // note use of concat() which make an array copy, instead of push()
                 results: updatedArray
             }
     }
