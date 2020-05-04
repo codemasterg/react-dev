@@ -8,6 +8,7 @@ import './App.css';
  * 
  * After downlaoding zip, must install dependencies:
  *    sudo npm install
+ *    sudo npm update react react-dom
  * 
  * Install redux and react redux integration:
  *   sudo npm install --save redux
