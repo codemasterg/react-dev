@@ -6,10 +6,13 @@ import * as actionType from '../../store/actions';
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 
+/**
+ * Example of a component that uses Redux with multiple reducers.  In
+ * this example, there is no local state object all state is managed 
+ * by Redux.
+ */
 class Counter extends Component {
-    state = {
-        counter: 0
-    }
+    
 
     counterChangedHandler = ( action, value ) => {
         switch ( action ) {
