@@ -11,11 +11,14 @@ class Persons extends Component {
         persons: []
     }
 
-    personAddedHandler = () => {
+    // add person click handler that receives person info, then
+    // dispatches the add person action to any interested reducers;
+    // i.e. personReducer.js
+    personAddedHandler = (name, age) => {
         const newPerson = {
             id: Math.random(), // not really unique but good enough here!
-            name: 'Max',
-            age: Math.floor( Math.random() * 40 )
+            name: name,
+            age: age,
         }
         // this.setState( ( prevState ) => {
         //     return { persons: prevState.persons.concat(newPerson)}
