@@ -1,7 +1,7 @@
+import * as actionType from '../actions'
 
 const initialState = {
     counter: 0,
-    results: [],
 }
 
 /**
@@ -16,39 +16,26 @@ const initialState = {
 const reducer = (state = initialState, action) => {
 
     switch (action.type) {
-        case ('INCREMENT'):
+        case (actionType.INCREMENT):
             return {
                 ...state,   // use spread op to make a shallow copy, every level of nesting must be copied
                 counter: state.counter + 1
             }
-        case ('DECREMENT'):
+        case (actionType.DECREMENT):
             return {
                 ...state,
                 counter: state.counter - 1
             }
-        case ('ADD'):
+        case (actionType.ADD):
             return {
                 ...state,
                 // 'value' prop established in Counter.js
                 counter: state.counter + action.value
             }
-        case ('SUBTRACT'):
+        case (actionType.SUBTRACT):
             return {
                 ...state,
                 counter: state.counter - action.value
-            }
-        case ('STORE_RESULT'):
-            return {
-                ...state,
-                // note use of concat() which make an array copy, instead of push()
-                results: state.results.concat({id: new Date(), value: state.counter})
-            }
-        case ('DELETE_RESULT'):
-            // note use of filter() which make an array copy, instead of splice()
-            const updatedArray = state.results.filter( (result, index) => result.id != action.resId); 
-            return {
-                ...state,
-                results: updatedArray
             }
     }
     return state;  // default - return state give which is basically a no-op

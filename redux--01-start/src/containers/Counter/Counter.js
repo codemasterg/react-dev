@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux'
 
+import * as actionType from '../../store/actions';
+
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 
@@ -39,7 +41,7 @@ class Counter extends Component {
                 <CounterControl label="Add 5" clicked={this.props.onAddCounter}  />
                 <CounterControl label="Subtract 5" clicked={this.props.onSubtractCounter}  />
                 <hr />
-                <button onClick={this.props.onStoreResult}>Store Result</button>
+                <button onClick={() => this.props.onStoreResult(this.props.ctr)}>Store Result</button>
                 <ul>
                     {this.props.storedResults.map(result => {
                         return (<li
@@ -56,12 +58,14 @@ class Counter extends Component {
 }
 
 // subset of state to pass to connect that this component is interested in.  In this
-// example, prop "ctr" is mapped to state "counter" which was established in reducer.js.
-// ctr will be passed as normal props to Counter via connect().
+// example, prop "ctr" is mapped to state "counter" which was established in counterReducer.js.
+// ctr will be passed as normal props to Counter via connect().  "ctrReducer" and 
+// "resReducer" are the prop names defined in index.js where the separate reducers
+// are combined.
 const mapStateToProps = (state) => {
     return{
-       ctr: state.counter,
-       storedResults: state.results
+       ctr: state.ctrReducer.counter,
+       storedResults: state.resReducer.results
     }
 }
 
@@ -77,14 +81,14 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onIncrementCounter: () => {
             // MUST be use 'type' as the name
-            return dispatch({type: 'INCREMENT'});
+            return dispatch({type: actionType.INCREMENT});
         },
         onDecrementCounter: () => {
-            return dispatch({type: 'DECREMENT'});
+            return dispatch({type: actionType.DECREMENT});
         },
         onAddCounter: () => {
             return dispatch({
-                type: 'ADD',
+                type: actionType.ADD,
                 // You can pass any payload, convention is usually an object 
                 //    payload: {f1:v1, f2:v2,..}
                 // Since we are dealing with a count, simple value (named 'value') 
@@ -94,16 +98,17 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSubtractCounter: () => {
             return dispatch({
-                type: 'SUBTRACT',
+                type: actionType.SUBTRACT,
                 value: 5
             });
         },
-        onStoreResult: () => {
-            return dispatch({type: 'STORE_RESULT'});
+        onStoreResult: (result) => {
+            // need to pass a result (the current counter) value as data when dispatched
+            return dispatch({type: actionType.STORE_RESULT, result: result});
         },
         onDeleteResult: (listElementId) => {
             // resId used by reducer for this action to know which result in the array to delete
-            return dispatch({type: 'DELETE_RESULT', resId: listElementId});
+            return dispatch({type: actionType.DELETE_RESULT, resId: listElementId});
         },
     }
 }
