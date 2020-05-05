@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import {Route} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary'
 import ContactData from './ContactData/ContactData'
@@ -8,45 +9,20 @@ import ContactData from './ContactData/ContactData'
  * Show preview of burger to be purchased
  */
 class Checkout extends Component {
-    state = {
-        ingredients: null,
-        totalPrice: 0,
-    }
-
-    // Since Checkout is not a sub-component of any other component of App,
-    // willMount is always called so this method can be used to perform the conversion
-    // of search params to state ingredients.  WillMount is used instead of didMount to
-    // ensure ingredients and total price are set as state vars before any rendering is done.
-    componentWillMount() {
-        const query = new URLSearchParams(this.props.location.search);  // extracts query search params
-        const ingredients = {};
-        let totalPrice = 0;
-        for(let params of query.entries()) {
-            if (params[0] === 'totalPrice') {
-                totalPrice = +params[1];
-            }
-            else {
-                // ['salad', '1']
-                ingredients[params[0]] = +params[1];  // '+' auto converts string to number
-            }
-        }
-        console.log('ingredients: ' + ingredients);
-        this.setState({ingredients: ingredients, totalPrice: totalPrice});
-    }
-
+    
     render() {
         return (
             <div>
                 <CheckoutSummary 
-                    ingredients={this.state.ingredients} 
+                    ingredients={this.props.ings} 
                     checkoutCancelHandler={this.checkoutCancelHandler}
                     checkoutContinueHandler={this.checkoutContinueHandler} />
                 <Route 
                     path={this.props.match.path + '/contact-data'} 
                     // NOTE - see how you can pass props on a route component?!
                     render={(props) => (<ContactData 
-                        ingredients={this.state.ingredients}
-                        totalPrice={this.state.totalPrice}
+                        ingredients={this.props.ings}
+                        totalPrice={this.props.totalPrice}
                         {...props} />)}/>
                 
             </div>
@@ -62,4 +38,16 @@ class Checkout extends Component {
     }
 }
 
-export default Checkout
+// subset of state to pass to connect that this component is interested in.  In this
+// example, prop "ings" is mapped to state "ingredients" which was established in ingredientsReducer.js.
+// ings will be passed as normal props to BurgerBuilder via connect().  "ingReducer" and 
+// "priceReducer" are the prop names defined in index.js where the separate reducers
+// are combined.
+const mapStateToProps = (state) => {
+    return {
+        ings: state.ingReducer.ingredients,     // must use as named in the ingredientsReducer
+        totalPrice: state.priceReducer.totalPrice,      // must use as named in priceReducer
+    }
+}
+
+export default connect(mapStateToProps)(Checkout)
