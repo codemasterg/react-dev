@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux'
 
-import * as actionType from '../../store/actions';
+import * as actionType from '../../store/actions/actions';
 
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
@@ -83,14 +83,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onIncrementCounter: () => {
-            // MUST be use 'type' as the name
-            return dispatch({type: actionType.INCREMENT});
+            // Use alias function for action type INCREMENT
+            return dispatch(actionType.increment());
         },
         onDecrementCounter: () => {
-            return dispatch({type: actionType.DECREMENT});
+            // MUST be use 'type' as the name
+            return dispatch(actionType.decrement());
         },
         onAddCounter: () => {
             return dispatch({
+                // leaving in example where we manually create object for dispatch
                 type: actionType.ADD,
                 // You can pass any payload, convention is usually an object 
                 //    payload: {f1:v1, f2:v2,..}
@@ -100,14 +102,11 @@ const mapDispatchToProps = (dispatch) => {
             });
         },
         onSubtractCounter: () => {
-            return dispatch({
-                type: actionType.SUBTRACT,
-                value: 5
-            });
+            return dispatch(actionType.subtract(5));
         },
         onStoreResult: (result) => {
             // need to pass a result (the current counter) value as data when dispatched
-            return dispatch({type: actionType.STORE_RESULT, result: result});
+            return dispatch(actionType.storeResult(result));
         },
         onDeleteResult: (listElementId) => {
             // resId used by reducer for this action to know which result in the array to delete

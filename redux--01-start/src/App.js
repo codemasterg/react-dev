@@ -13,6 +13,7 @@ import './App.css';
  * Install redux and react redux integration:
  *   sudo npm install --save redux
  *   sudo npm install --save react-redux
+ *   sudo npm install --save redux-thunk
  * 
  * Then start the server for dev:
  *    sudo npm start

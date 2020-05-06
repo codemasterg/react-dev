@@ -1,4 +1,5 @@
-import * as actionType from '../actions';
+import * as actionType from '../actions/actions';
+import {updateObject} from '../utility';
 
 const initialState = {
     results: [],
@@ -17,11 +18,10 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
         case (actionType.STORE_RESULT):
-            return {
-                ...state,
-                // note use of concat() which make an array copy, instead of push()
-                results: state.results.concat({id: new Date(), value: action.result})
-            }
+            // Example of using utility function to save some code.
+            // Note use of concat() which make an array copy, instead of push()
+            return updateObject(state, 
+                {results: state.results.concat({id: new Date(), value: action.result})});
         case (actionType.DELETE_RESULT):
             // note use of filter() which make an array copy, instead of splice()
             const updatedArray = state.results.filter( (result, index) => result.id != action.resId); 
