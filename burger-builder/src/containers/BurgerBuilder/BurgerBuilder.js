@@ -8,7 +8,8 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler'
-import * as actionType from '../../store/actionType'
+import * as actionType from '../../store/actions/actionType'
+import * as actions from '../../store/actions/index'
 
 const INGREDIENT_PRICES = {
     salad: .5,
@@ -26,11 +27,7 @@ class BurgerBuilder extends Component {
 
     componentDidMount() {
         console.log(this.props);
-        axios.get('https://react-my-burger-fc12a.firebaseio.com/ingredients.json')
-            .then(resp => {
-                this.setState({ingredients: resp.data})
-            })
-            .catch(error => {console.log(error)});
+        this.props.onInitIngredients();
     }
 
     render() {
@@ -110,6 +107,7 @@ class BurgerBuilder extends Component {
      * Checkout in App.js.
      */
     orderContinueHandler = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
 }
@@ -122,7 +120,8 @@ class BurgerBuilder extends Component {
 const mapStateToProps = (state) => {
     return {
         ings: state.ingReducer.ingredients,
-        totalPrice: state.priceReducer.totalPrice
+        totalPrice: state.priceReducer.totalPrice,
+        error: state.ingReducer.error
     }
 }
 
@@ -136,9 +135,12 @@ const mapStateToProps = (state) => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        onIngredientAdd: (ingName) => dispatch({type: actionType.ADD_INGREDIENT, ingredientName: ingName}),
-        onIngredientRemove: (ingredientName) => dispatch({type: actionType.REMOVE_INGREGIENT, ingredientName: ingredientName}),
+        // exmamples of using action creator methods as well as an inline action example
+        onIngredientAdd: (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientRemove: (ingredientName) => dispatch(actions.removeIngredient(ingredientName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
         onPriceUpdate: (updatedPrice) => dispatch({type: actionType.UPDATE_PRICE, price: updatedPrice}),
+        onInitPurchase: () => dispatch(actions.purchaseInit()),
     }
 }
 export default withErrorHandler(

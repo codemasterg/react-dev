@@ -13,6 +13,11 @@ import Orders from './containers/Orders/Orders'
  * sudo npm install axios --save  // add support for rest calls from react using axios
  * sudo npm install --save react-router react-router-dom // add support for path routing
  * 
+ * Install redux and react redux integration:
+ *   sudo npm install --save redux
+ *   sudo npm install --save react-redux
+ *   sudo npm install --save redux-thunk
+ * 
  * Component flow: BurgerBuilder --> OrderSummary (a dialog / modal) --> Checkout
  *    --> CheckoutSummary
  */

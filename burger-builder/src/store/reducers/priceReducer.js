@@ -1,4 +1,4 @@
-import * as actionType from '../actionType'
+import * as actionType from '../actions/actionType'
 
 
 const initialState = {
@@ -16,6 +16,11 @@ const priceReducer = (state = initialState, action) => {
                 totalPrice: state.totalPrice + action.price 
             }
         }
+        case actionType.SET_INGREDIENTS:  // note how this action is handled here and in ingredientsReducer
+            return {
+                ...state,
+                totalPrice: 4,
+            }
         default:
             return state;
     }

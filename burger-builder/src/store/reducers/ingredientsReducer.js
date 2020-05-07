@@ -1,12 +1,8 @@
-import * as actionType from '../actionType'
+import * as actionType from '../actions/actionType'
 
 const initialState = {
-    ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0,
-    }
+    ingredients: null,
+    error: false
 }
 
 const ingredientsReducer = (state = initialState, action) => {
@@ -22,7 +18,7 @@ const ingredientsReducer = (state = initialState, action) => {
                 }
             }
         }
-        case (actionType.REMOVE_INGREGIENT): {
+        case (actionType.REMOVE_INGREDIENT): {
             return {
                 ...state,
                 ingredients: {
@@ -32,6 +28,17 @@ const ingredientsReducer = (state = initialState, action) => {
                 }
             }
         }
+        case actionType.SET_INGREDIENTS:
+            return {
+                ...state,
+                ingredients: action.ingredients,
+                error: false,
+            }
+        case actionType.FETCH_INGREDIENTS_FAILED:
+            return {
+                ...state,
+                error: true
+            }
         default:
             return state;
     }

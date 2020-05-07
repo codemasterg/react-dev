@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react'
 import axios from '../../../axios-orders'
+import {connect} from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button'
 import classes from './ContactData.css'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../../hoc/WithErrorHandler/withErrorHandler'
 import Input from '../../../components/UI/Input/Input'
+import * as actions from '../../../store/actions/order'
 
 class ContactData extends Component {
 
@@ -24,12 +26,11 @@ class ContactData extends Component {
                         {value: 'cheapest', displayValue: 'Cheapest'},
                     ]
                 },
-                value: '',
+                value: 'fastest',
                 validation: {},
                 valid: true,  // drop-down is always valid
             },
         },
-        loading: false,
         formIsValid: false,
     }
 
@@ -44,7 +45,7 @@ class ContactData extends Component {
 
         return (
             <Fragment>
-                {this.state.loading ? <Spinner /> :
+                {this.props.loading ? <Spinner /> :
 
                     <div className={classes.ContactData}>
                         <h4>Enter your contact data</h4>
@@ -78,7 +79,6 @@ class ContactData extends Component {
         event.preventDefault();
 
         // base url set in instance that was imported
-        this.setState({ loading: true }); // for busy wheel
 
         // Just need contact input field names and values entered so they can be posted
         const contactData ={};
@@ -92,21 +92,7 @@ class ContactData extends Component {
             price: this.props.totalPrice, // normally set on server!
             contactData: contactData,
         }
-
-        axios.post('/orders.json', order)
-            .then(response => {
-                this.setState({ loading: false });
-                console.log(response);
-                this.props.history.push('/');  // redirect back to main page
-            })
-            .catch(error => {
-                this.setState({ loading: false });
-                console.log(error);
-            })
-            .finally(() => {
-                // place holder.  cannot call setState here because sucess case does a
-                // redirect (history.push) which unmounts this component.
-            })
+        this.props.onOrderBurger(order);
     }
  
     // common input config creater
@@ -174,4 +160,25 @@ class ContactData extends Component {
     }
 }
 
-export default withErrorHandler(ContactData, axios);
+// subset of state to pass to connect that this component is interested in.  In this
+// example, prop "ings" is mapped to state "ingredients" which was established in ingredientsReducer.js.
+// ings will be passed as normal props to BurgerBuilder via connect().  "ingReducer" and 
+// "priceReducer" are the prop names defined in index.js where the separate reducers
+// are combined.
+const mapStateToProps = (state) => {
+    return {
+        ings: state.ingReducer.ingredients,
+        totalPrice: state.priceReducer.totalPrice,
+        error: state.ingReducer.error,
+        loading: state.orderReducer.loading
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));

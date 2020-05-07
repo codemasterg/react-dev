@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import {Route} from 'react-router-dom'
+import React, { Component, Fragment } from "react"
+import {Route, Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary'
@@ -9,14 +9,25 @@ import ContactData from './ContactData/ContactData'
  * Show preview of burger to be purchased
  */
 class Checkout extends Component {
+
     
     render() {
+        let summary = <Redirect to="/" />
+        if(this.props.ings) {
+            const purchasedRedirect = this.props.purchased ? <Redirect to="/"/> : null;
+            summary = (
+                <Fragment>
+                    {purchasedRedirect}
+                    <CheckoutSummary
+                        ingredients={this.props.ings}
+                        checkoutCancelHandler={this.checkoutCancelHandler}
+                        checkoutContinueHandler={this.checkoutContinueHandler} />
+                </Fragment>
+            );
+        }
         return (
             <div>
-                <CheckoutSummary 
-                    ingredients={this.props.ings} 
-                    checkoutCancelHandler={this.checkoutCancelHandler}
-                    checkoutContinueHandler={this.checkoutContinueHandler} />
+                {summary}
                 <Route 
                     path={this.props.match.path + '/contact-data'} 
                     // NOTE - see how you can pass props on a route component?!
@@ -47,6 +58,7 @@ const mapStateToProps = (state) => {
     return {
         ings: state.ingReducer.ingredients,     // must use as named in the ingredientsReducer
         totalPrice: state.priceReducer.totalPrice,      // must use as named in priceReducer
+        purchased: state.orderReducer.purchased,
     }
 }
 
