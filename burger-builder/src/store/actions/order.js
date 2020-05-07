@@ -22,7 +22,14 @@ export const purchaseBurgerStart = () => {
     }
 }
 
-// Redux Thunk action to run async
+
+/** Redux Thunk action to run an async operation.  Note the "thunk" pattern here:
+An action creator that instead of just returning a type and value(s) object,
+returns an anonymous function that ultimately performs a dispatch of a type and
+value(s) object.  This is effectively evaluated as middleware occurring between 
+dispatch of this action and the reception by a reducer.  In other words, this
+allows the Rest call to be made BEFORE the ultimate dispatches for success or fail.
+*/
 export const purchaseBurger = (orderData) => {
     return dispatch => {
         dispatch(purchaseBurgerStart());
