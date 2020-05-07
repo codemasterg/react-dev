@@ -4,6 +4,7 @@ import Layout from './containers/Layout/Layout'
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
 import Checkout from './containers/Checkout/Checkout'
 import Orders from './containers/Orders/Orders'
+import Auth from './containers/Auth/Auth'
 
 /**
  * Burger Builder App, created with:
@@ -35,7 +36,8 @@ class App extends Component {
       <BrowserRouter>
         <Layout>
           {/* Use 'exact' so "/" is not treated as a wild card prefix, A Switch can instead be used
-          if preferred */}          
+          if preferred */}
+          <Route path="/auth" component={Auth}/>
           <Route path="/checkout" component={Checkout}/>
           <Route path="/orders" component={Orders}/>
           <Route path="/" exact component={BurgerBuilder}/>
