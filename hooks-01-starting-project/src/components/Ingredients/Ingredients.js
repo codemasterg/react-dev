@@ -1,16 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
 import Search from './Search';
-import Spinner from '../UI/LoadingIndicator';
 import ErrorModal from '../UI/ErrorModal';
+
+const ingredientReducer = (currentIngredients, action) => {
+
+  // return a new state (a reduction)
+  switch (action.type) {
+    case 'SET':
+      return action.ingredients;
+    case 'ADD':
+      return [...currentIngredients, action.ingredient]
+    case 'DELETE':
+      return currentIngredients.filter(ingredient => ingredient.id !== action.id)
+    default:
+
+  }
+}
+
 function Ingredients() {
+  // a useReducer hook is an alternative to useState
+  const [ingredients, dispatch] = useReducer(ingredientReducer, []);  
 
   // state is an array of ingredients
-  const [ingredients, setIngredients] = useState([]);
+  //const [ingredients, setIngredients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);  // for spinner
   const [error, setError] = useState();  // for error modal (dialog)
+
+  // implement setIngredients() as a part of useReducer() and an example of an 
+  // alternative to useState().
+  // Need to use useCallback() so setIngredients is cached and does not cause infinite re-render.
+  const setIngredients = useCallback( (ingredients) => { 
+    dispatch({type: 'SET', ingredients: ingredients});
+  }, [] );  
 
   // can have more than 1 useEffect() in a component function
   useEffect(() => {
@@ -33,9 +57,11 @@ function Ingredients() {
         return response.json();  // must convert response to json which is done via promise
       })
       .then(responseData => {  // process final promise using ID (name field) returned by DB
-        setIngredients(prevIngredients => {
-          return [...prevIngredients, { id: responseData.name, ...ingredient }]
-        });
+        // setIngredients(prevIngredients => {
+        //   return [...prevIngredients, { id: responseData.name, ...ingredient }]
+        // });
+        // Alternative to useState, see setup for useReducer
+        dispatch({type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
       });
   }
 
@@ -48,9 +74,11 @@ function Ingredients() {
       })
       .then(responseData => {  // filter is used because it produces a new copy of the array
         setIsLoading(false);
-        setIngredients(prevIngredients => {
-          return prevIngredients.filter((ingredient) => ingredient.id !== id);
-        });
+        // setIngredients(prevIngredients => {
+        //   return prevIngredients.filter((ingredient) => ingredient.id !== id);
+        // });
+        // Alternative to useState, see setup for useReducer
+        dispatch({type: 'DELETE', id: id});
       })
       .catch((err) => {
         // React batches state updates so even though there are 2 state updates,
