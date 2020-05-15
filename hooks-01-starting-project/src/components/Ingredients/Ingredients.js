@@ -16,7 +16,6 @@ const ingredientReducer = (currentIngredients, action) => {
     case 'DELETE':
       return currentIngredients.filter(ingredient => ingredient.id !== action.id)
     default:
-
   }
 }
 
@@ -41,7 +40,8 @@ function Ingredients() {
     console.log('rendering ingredients', ingredients);
   }, [ingredients]);  // note 'ingredients' has been specified as a dependency (only run when this changes)
 
-  const addIngredientHandler = (ingredient) => {
+  // Use useCallback() to cache this function to eliminate unecessary re-renders
+  const addIngredientHandler = useCallback( (ingredient) => {
 
     // save to DB using built in fetch(), note addition of "ingredients.json" which is 
     // require by firebase as the root element to store things under.
@@ -63,9 +63,10 @@ function Ingredients() {
         // Alternative to useState, see setup for useReducer
         dispatch({type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
       });
-  }
+  }, []);
 
-  const removeIngredientHandler = (id) => {
+  // cache this method with useCallback() to avoid unecessary re-renders
+  const removeIngredientHandler = useCallback( (id) => {
     // note back ticks (string interpolation) so dynamic params can be used in URL
     setIsLoading(true);
     fetch(`https://react-hooks-update-9b3da.firebaseio.com/ingredients/${id}.json`,
@@ -86,7 +87,7 @@ function Ingredients() {
         setError(err.message);
         setIsLoading(false);
       });
-  }
+  }, []);
 
   const clearError = () => {
     setError(null);
@@ -102,6 +103,8 @@ function Ingredients() {
         {/* noted - Search fetchs previously stored ingredients on inital render
             so no need to repeat rest GET call in this function. */}
         <Search onLoadIngredients={setIngredients} />
+        {/* an alternative to useCallback() and React.memo() is useMemo() which allows you 
+            to wrap this element and specify its dependencies  */}
         <IngredientList ingredients={ingredients} onRemoveItem={removeIngredientHandler} />
       </section>
     </div>
