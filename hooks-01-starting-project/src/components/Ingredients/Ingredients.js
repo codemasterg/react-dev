@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import React, { useState, useEffect, useReducer, useCallback, useMemo } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -40,8 +40,7 @@ function Ingredients() {
     console.log('rendering ingredients', ingredients);
   }, [ingredients]);  // note 'ingredients' has been specified as a dependency (only run when this changes)
 
-  // Use useCallback() to cache this function to eliminate unecessary re-renders
-  const addIngredientHandler = useCallback( (ingredient) => {
+  const addIngredientHandler = (ingredient) => {
 
     // save to DB using built in fetch(), note addition of "ingredients.json" which is 
     // require by firebase as the root element to store things under.
@@ -63,7 +62,7 @@ function Ingredients() {
         // Alternative to useState, see setup for useReducer
         dispatch({type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
       });
-  }, []);
+  };
 
   // cache this method with useCallback() to avoid unecessary re-renders
   const removeIngredientHandler = useCallback( (id) => {
@@ -89,9 +88,15 @@ function Ingredients() {
       });
   }, []);
 
-  const clearError = () => {
+  const clearError = useCallback( () => {
     setError(null);
-  }
+  }, []);
+
+  /* an alternative to React.memo() is useMemo() which allows you 
+     to wrap this element and specify its dependencies that can change  */
+  const ingredientList = useMemo( () => {
+    return <IngredientList ingredients={ingredients} onRemoveItem={removeIngredientHandler} />
+  }, [ingredients, removeIngredientHandler])
 
   return (
     <div className="App">
@@ -103,9 +108,7 @@ function Ingredients() {
         {/* noted - Search fetchs previously stored ingredients on inital render
             so no need to repeat rest GET call in this function. */}
         <Search onLoadIngredients={setIngredients} />
-        {/* an alternative to useCallback() and React.memo() is useMemo() which allows you 
-            to wrap this element and specify its dependencies  */}
-        <IngredientList ingredients={ingredients} onRemoveItem={removeIngredientHandler} />
+        {ingredientList}
       </section>
     </div>
   );

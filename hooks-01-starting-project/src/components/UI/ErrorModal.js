@@ -2,6 +2,8 @@ import React from 'react';
 
 import './ErrorModal.css';
 
+// avoid re-rendering, see Ingredients.js use of useCallback().  This is just
+// an example.  Since errors are rare, normally  no need wo wrap with a memo.
 const ErrorModal = React.memo(props => {
   return (
     <React.Fragment>
